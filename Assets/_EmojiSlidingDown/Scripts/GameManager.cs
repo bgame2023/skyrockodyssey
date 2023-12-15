@@ -14,7 +14,8 @@ public enum GameState
 }
 
 public class GameManager : MonoBehaviour
-{
+{   
+    
     public static GameManager Instance { get; private set; }
 
     public static event System.Action<GameState, GameState> GameStateChanged = delegate { };
