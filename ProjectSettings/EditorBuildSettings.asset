@@ -7,5 +7,8 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/_EmojiSlidingDown/Scenes/Main.unity
-  - enabled: 1
+    guid: 7ced3701372d53c40a240979deb00914
+  - enabled: 0
     path: Assets/_EmojiSlidingDown/Scenes/CharacterSelection.unity
+    guid: 7d7963a841c9c42978dac5049f7064a2
+  m_configObjects: {}

@@ -18,25 +18,15 @@ public class UIManager : MonoBehaviour
     public Text bestScore;
     public Text coinText;
     public GameObject tapToStart;
-    public GameObject characterSelectBtn;
     public GameObject menuButtons;
-    public GameObject rewardUI;
+
     public GameObject settingsUI;
     public GameObject soundOnBtn;
     public GameObject soundOffBtn;
     public GameObject musicOnBtn;
     public GameObject musicOffBtn;
 
-    [Header("Premium Features Buttons")]
-    public GameObject watchRewardedAdBtn;
-    public GameObject leaderboardBtn;
-    public GameObject shareBtn;
-    public GameObject iapPurchaseBtn;
-    public GameObject removeAdsBtn;
-    public GameObject restorePurchaseBtn;
 
-    [Header("In-App Purchase Store")]
-    public GameObject storeUI;
 
     Animator scoreAnimator;
     bool isWatchAdsForCoinBtnActive;
@@ -101,24 +91,12 @@ public class UIManager : MonoBehaviour
         title.SetActive(false);
         score.gameObject.SetActive(false);
         tapToStart.SetActive(false);
-        characterSelectBtn.SetActive(false);
         menuButtons.SetActive(false);
 
-        // Enable or disable premium stuff
-        bool enablePremium = GameManager.Instance.enablePremiumFeatures;
-        leaderboardBtn.SetActive(enablePremium);
-        shareBtn.SetActive(enablePremium);
-        iapPurchaseBtn.SetActive(enablePremium);
-        removeAdsBtn.SetActive(enablePremium);
-        restorePurchaseBtn.SetActive(enablePremium);
 
-        // Hidden by default
-        storeUI.SetActive(false);
         settingsUI.SetActive(false);
 
-        // These premium feature buttons are hidden by default
-        // and shown when certain criteria are met (e.g. rewarded ad is loaded)
-        watchRewardedAdBtn.gameObject.SetActive(false);
+
     }
 
     public void StartGame()
@@ -142,10 +120,6 @@ public class UIManager : MonoBehaviour
         title.SetActive(true);
         tapToStart.SetActive(true);
 
-        // Display character selection button
-        Character selectedCharacter = CharacterManager.Instance.characters[CharacterManager.Instance.CurrentCharacterIndex];
-        characterSelectBtn.transform.Find("Image").GetComponent<Image>().sprite = selectedCharacter.sprite;
-        characterSelectBtn.SetActive(true);
 
         // If first launch: show "WatchForCoins" if the conditions are met
         if (GameManager.GameCount == 0)
@@ -160,9 +134,8 @@ public class UIManager : MonoBehaviour
         title.SetActive(false);
         score.gameObject.SetActive(true);
         tapToStart.SetActive(false);
-        characterSelectBtn.SetActive(false);
         menuButtons.SetActive(false);
-        watchRewardedAdBtn.SetActive(false);
+
     }
 
     public void ShowGameOverUI()
@@ -173,7 +146,6 @@ public class UIManager : MonoBehaviour
         tapToStart.SetActive(false);
         menuButtons.SetActive(true);
 
-        watchRewardedAdBtn.gameObject.SetActive(false);
         settingsUI.SetActive(false);
 
         // Show "WatchForCoins" and "DailyReward" buttons if the conditions are met
@@ -206,92 +178,16 @@ public class UIManager : MonoBehaviour
         settingsUI.SetActive(false);
     }
 
-    public void ShowStoreUI()
-    {
-        storeUI.SetActive(true);
-    }
 
-    public void HideStoreUI()
-    {
-        storeUI.SetActive(false);
-    }
 
-    public void WatchRewardedAd()
-    {
-#if EASY_MOBILE
-        // Hide the button
-        watchRewardedAdBtn.SetActive(false);
 
-        AdDisplayer.CompleteRewardedAdToEarnCoins += OnCompleteRewardedAdToEarnCoins;
-        AdDisplayer.Instance.ShowRewardedAdToEarnCoins();
-#endif
-    }
 
-    void OnCompleteRewardedAdToEarnCoins()
-    {
-#if EASY_MOBILE
-        // Unsubscribe
-        AdDisplayer.CompleteRewardedAdToEarnCoins -= OnCompleteRewardedAdToEarnCoins;
 
-        // Give the coins!
-        ShowRewardUI(AdDisplayer.Instance.rewardedCoins);
-#endif
-    }
 
-    public void ShowRewardUI(int reward)
-    {
-        rewardUI.SetActive(true);
-        rewardUI.GetComponent<RewardUIController>().Reward(reward);
-    }
 
-    public void HideRewardUI()
-    {
-        rewardUI.GetComponent<RewardUIController>().Close();
-    }
 
-    public void ShowLeaderboardUI()
-    {
-#if EASY_MOBILE
-        if (GameServiceManager.IsInitialized())
-        {
-            GameServiceManager.ShowLeaderboardUI();
-        }
-        else
-        {
-#if UNITY_IOS
-            MobileNativeUI.Alert("Service Unavailable", "The user is not logged in to Game Center.");
-#elif UNITY_ANDROID
-            GameServiceManager.Init();
-#endif
-        }
-#endif
-    }
 
-    public void PurchaseRemoveAds()
-    {
-#if EASY_MOBILE
-        InAppPurchaser.Instance.Purchase(InAppPurchaser.Instance.removeAds);
-#endif
-    }
 
-    public void RestorePurchase()
-    {
-#if EASY_MOBILE
-        InAppPurchaser.Instance.RestorePurchase();
-#endif
-    }
-
-    public void ShareScreenshot()
-    {
-#if EASY_MOBILE
-        ScreenshotSharer.Instance.ShareScreenshot();
-#endif
-    }
-
-    public void ShowCharacterSelectionScene()
-    {
-        SceneManager.LoadScene("CharacterSelection");
-    }
 
     public void ToggleSound()
     {
